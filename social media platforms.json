@@ -1,0 +1,62 @@
+[
+  {
+    "social_media_platform": "Facebook",
+    "number_of_users_billion": 2.958
+  },
+  {
+    "social_media_platform": "Youtube",
+    "number_of_users_billion": 2.514
+  },
+  {
+    "social_media_platform": "Whatsapp",
+    "number_of_users_billion": 2
+  },
+  {
+    "social_media_platform": "Instagram",
+    "number_of_users_billion": 2
+  },
+  {
+    "social_media_platform": "WeChat",
+    "number_of_users_billion": 1.309
+  },
+  {
+    "social_media_platform": "Tik Tok",
+    "number_of_users_billion": 1.051
+  },
+  {
+    "social_media_platform": "Facebook Messenger",
+    "number_of_users_billion": 0.931
+  },
+  {
+    "social_media_platform": "Douyin",
+    "number_of_users_billion": 0.715
+  },
+  {
+    "social_media_platform": "Telegram",
+    "number_of_users_billion": 0.7
+  },
+  {
+    "social_media_platform": "Snapchat",
+    "number_of_users_billion": 0.635
+  },
+  {
+    "social_media_platform": "Kuaishou",
+    "number_of_users_billion": 0.626
+  },
+  {
+    "social_media_platform": "Sina Weibo",
+    "number_of_users_billion": 0.584
+  },
+  {
+    "social_media_platform": "QQ",
+    "number_of_users_billion": 0.574
+  },
+  {
+    "social_media_platform": "Twitter",
+    "number_of_users_billion": 0.556
+  },
+  {
+    "social_media_platform": "Pinterest",
+    "number_of_users_billion": 0.445
+  }
+]

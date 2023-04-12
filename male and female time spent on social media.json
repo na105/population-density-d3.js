@@ -1,0 +1,27 @@
+[
+  {
+    "age": "16-24",
+    "female_time_hours": 3.11,
+    "male_time_hours": 2.46
+  },
+  {
+    "age": "25-34",
+    "female_time_hours": 2.56,
+    "male_time_hours": 2.42
+  },
+  {
+    "age": "36-44",
+    "female_time_hours": 2.33,
+    "male_time_hours": 2.19
+  },
+  {
+    "age": "45-54",
+    "female_time_hours": 2.08,
+    "male_time_hours": 1.58
+  },
+  {
+    "age": "55-64",
+    "female_time_hours": 1.4,
+    "male_time_hours": 1.38
+  }
+]

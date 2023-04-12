@@ -1,0 +1,30 @@
+[
+  {
+    "mental_health_viewpoints": "Very Positive",
+    "Percantage": "11%"
+  },
+  {
+    "mental_health_viewpoints": "Somewhat Positive",
+    "Percantage": "15%"
+  },
+  {
+    "mental_health_viewpoints": "Neither Positive Nor Negative",
+    "Percantage": "29%"
+  },
+  {
+    "mental_health_viewpoints": "Somewhat Negative",
+    "Percantage": "21%"
+  },
+  {
+    "mental_health_viewpoints": "Very Negative",
+    "Percantage": "11%"
+  },
+  {
+    "mental_health_viewpoints": "I Don't Use Social Media",
+    "Percantage": "6%"
+  },
+  {
+    "mental_health_viewpoints": "Not Sure",
+    "Percantage": "8%"
+  }
+]

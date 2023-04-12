@@ -1,0 +1,32 @@
+[
+  {
+    "world_region": "North America",
+    "male_users": "46%",
+    "female_users": "54%"
+  },
+  {
+    "world_region": "South America",
+    "male_users": "48%",
+    "female_users": "52%"
+  },
+  {
+    "world_region": "West Europe",
+    "male_users": "50%",
+    "female_users": "50%"
+  },
+  {
+    "world_region": "Southern Africa",
+    "male_users": "48%",
+    "female_users": "52%"
+  },
+  {
+    "world_region": "South Asia",
+    "male_users": "73%",
+    "female_users": "27%"
+  },
+  {
+    "world_region": "Ocenia",
+    "male_users": "47%",
+    "female_users": "53%"
+  }
+]
