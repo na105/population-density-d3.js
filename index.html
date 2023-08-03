@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+  <script src="https://d3js.org/d3.v7.js"></script>
+  <script src="./js/read-data-functions.js"></script>
+  <script src="./js/data-visualization-functions.js"></script>
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="./js/script_src.js"></script>
+    <title>Population Density Dashboard</title>
+  </head>
+
+  <body
+    class="body_main"
+    style="background-image: None; background-color: #ffffff">
+
+    <div class="header_card">
+    	<div class="header_card_title" style="background-color: white">
+          <div class="lab_title" style="color: #69b3a2; font-size: 30px; text-align: center;">
+            Population Density Dashboard
+        	</div>
+      	</div>
+    </div>
+
+    <div class="header_card">
+      <div>
+        <span id="data_viz"></span>
+      </div>
+      <div id="multiple_select" style="position: absolute; top: 1050px; left: 40px">
+        Choose Country (Multiple Selection Possible) <br />
+        <br />
+        <select
+          width="300"
+          style="width: 350px"
+          size="18"
+          multiple
+          id="menu"
+        ></select>
+        <br />
+      </div>
+      <div>
+        <span id="layout_s2"></span>
+      </div>
+      <div>
+        <span id="layout_s3"></span>
+      </div>
+      <div>
+        <span id="layout_s4"></span>
+      </div>
+      <div>
+        <span id="layout_s5"></span>
+      </div>
+      <div>
+        <span id="svg_section_pop"></span>
+      </div>
+      <div>
+        <span id="svg_section_fe"></span>
+      </div>
+      <div>
+        <span id="svg_section_s6"></span>
+      </div>
+      <div>
+        <span id="svg_section_corr"></span>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// HEADER STATS /////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    width_hs = 1400;
+    height_hs = 200;
+    location_y_hs = 50;
+    location_x_hs = 0;
+    country_code_hs = "ALL";
+    year_hs = "2013";
+    span_id_hs = "data_viz";
+
+    svg_hs = d3
+      .select("#" + span_id_hs)
+      .append("svg")
+      .attr("width", width_hs)
+      .attr("height", height_hs)
+      .style("background-color", "white")
+      .style("position", "relative")
+      .style("top", location_y_hs)
+      .style("left", location_x_hs)
+      .append("g");
+
+    svg_hs
+      .append("rect")
+      .attr("width", width_hs)
+      .attr("height", 20)
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("fill", "#69b3a2");
+
+    createHeaderStatsVisualization(
+      country_code_hs,
+      year_hs,
+      svg_hs,
+      span_id_hs,
+      width_hs,
+      height_hs
+    );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// CHOROPLETH MAP LAYOUT /////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    property_bm = "population";
+    span_id_bm = "data_viz";
+    year_bm = 2013;
+    location_x_bm = "40";
+    location_y_bm = "0";
+
+    const width_bm = 850;
+    const height_bm = 800;
+    const svg_bm = d3
+      .select("#" + span_id_bm)
+      .append("svg")
+      .attr("width", width_bm)
+      .attr("height", height_bm)
+      .style("position", "relative")
+      .style("top", location_y_bm)
+      .style("left", location_x_bm)
+      .append("g")
+      .attr("transform", `translate(0,0)`);
+
+    const Tooltip_bm = d3.select("#" + span_id_bm).append("span");
+
+    var chartHeader_bm = svg_bm.append("g").attr("class", "chartHeader");
+
+    var controlButtons_bm = svg_bm.append("g").attr("class", "controlButtons");
+
+    createMapLayout(
+      property_bm,
+      span_id_bm,
+      year_bm,
+      svg_bm,
+      Tooltip_bm,
+      width_bm,
+      height_bm,
+      chartHeader_bm,
+      controlButtons_bm
+    );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// Cirular BarPlot LAYOUT /////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // set the dimensions and margins of the graph
+    const margin_cbm = { top: 90, right: 90, bottom: 10, left: 90 },
+      width_cbm = 500 - margin_cbm.left - margin_cbm.right,
+      height_cbm = 560 - margin_cbm.top - margin_cbm.bottom,
+      innerRadius_cbm = 50,
+      outerRadius_cbm = Math.min(width_cbm, height_cbm) / 2; // the outerRadius goes from the middle of the SVG area to the border
+
+    year_cbm = "2013";
+    property_cbm = "population";
+    span_id_cbm = "data_viz";
+    location_x_cbm = "60";
+    location_y_cbm = "-260";
+    // append the svg object
+    const svg_cbm = d3
+      .select("#" + span_id_cbm)
+      .append("svg")
+      .attr("width", width_cbm + margin_cbm.left + margin_cbm.right)
+      .attr("height", height_cbm + margin_cbm.top + margin_cbm.bottom)
+      .style("position", "relative")
+      .style("top", location_y_cbm)
+      .style("left", location_x_cbm)
+      .append("g")
+      .attr(
+        "transform",
+        `translate(${width_cbm / 2 + margin_cbm.left}, ${
+          height_cbm / 2 + margin_cbm.top
+        })`
+      );
+
+    var controlButtons_cbm = svg_cbm
+      .append("g")
+      .attr("class", "controlButtons");
+
+    const Tooltip_cbm = d3.select("#" + span_id_cbm).append("span");
+
+    var chartStats_cbm = svg_cbm.append("g").attr("class", "chartStats");
+    var chartHeader_cbm = svg_cbm.append("g").attr("class", "chartHeader");
+    var data_order_cbm = "ASC";
+
+    createCircularBarPlot(
+      property_cbm,
+      year_cbm,
+      span_id_cbm,
+      location_x_cbm,
+      location_y_cbm,
+      svg_cbm,
+      Tooltip_cbm,
+      width_cbm,
+      height_cbm,
+      margin_cbm,
+      innerRadius_cbm,
+      outerRadius_cbm,
+      chartStats_cbm,
+      controlButtons_cbm,
+      chartHeader_cbm,
+      data_order_cbm
+    );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// AreaChartWithPoints LAYOUT ///////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    property_acp = "population";
+    country_code_acp = "AFG";
+    span_id_acp = "data_viz";
+    location_x_acp = "900";
+    location_y_acp = "-280";
+    width_part_acp = "500";
+    height_part_acp = "300";
+    // set the dimensions and margins of the graph
+    const margin_acp = { top: 70, right: 30, bottom: 50, left: 80 },
+      width_acp = width_part_acp - margin_acp.left - margin_acp.right,
+      height_acp = height_part_acp - margin_acp.top - margin_acp.bottom;
+
+    // append the svg object to the body of the page
+    var svg_acp = d3
+      .select("#" + span_id_acp)
+      .append("svg")
+      .attr("width", width_acp + margin_acp.left + margin_acp.right)
+      .attr("height", height_acp + margin_acp.top + margin_acp.bottom)
+      .style("position", "relative")
+      .style("top", location_y_acp)
+      .style("left", location_x_acp)
+      .append("g")
+      .attr("transform", `translate(${margin_acp.left},${margin_acp.top})`);
+
+    var Tooltip_acp = d3.select("#" + span_id_acp).append("span");
+
+    xAxis_acp = svg_acp
+      .append("g")
+      .attr("transform", `translate(0,  ${height_acp + 5})`);
+    yAxis_acp = svg_acp.append("g").attr("transform", "translate(-5,0)");
+
+    var chartStats_acp = svg_acp.append("g").attr("class", "chartStats");
+    var chartHeader_acp = svg_acp.append("g").attr("class", "chartHeader");
+
+    createAreaPointsChart(
+      property_acp,
+      country_code_acp,
+      span_id_acp,
+      location_x_acp,
+      location_y_acp,
+      svg_acp,
+      Tooltip_acp,
+      width_acp,
+      height_acp,
+      margin_acp,
+      xAxis_acp,
+      yAxis_acp,
+      chartStats_acp,
+      chartHeader_acp
+    );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// MultiLineChart LAYOUT ///////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    property_mlc = "population";
+    span_id_mlc = "layout_s2";
+    menu_span_id_mlc = "menu";
+    location_x_mlc = "200";
+    location_y_mlc = "-300";
+    width_part_mlc = "1000";
+    height_part_mlc = "400";
+
+    var margin_mlc = { top: 100, right: 100, bottom: 70, left: 80 },
+      width_mlc = width_part_mlc - margin_mlc.left - margin_mlc.right,
+      height_mlc = height_part_mlc - margin_mlc.top - margin_mlc.bottom;
+
+    // Parse the date / time
+    const parseTime_mlc = d3.timeParse("%Y");
+    // Adds the svg canvas
+    var svg_mlc = d3
+      .select("body")
+      .select("#" + span_id_mlc)
+      .append("svg")
+      .attr("width", width_mlc + margin_mlc.left + margin_mlc.right)
+      .attr("height", height_mlc + margin_mlc.top + margin_mlc.bottom)
+      .style("position", "relative")
+      .style("top", location_y_mlc)
+      .style("left", location_x_mlc)
+      .append("g")
+      .attr(
+        "transform",
+        "translate(" + margin_mlc.left + "," + margin_mlc.top + ")"
+      );
+    var xAxis_mlc = svg_mlc
+      .append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height_mlc + ")");
+    var yAxis_mlc = svg_mlc.append("g").attr("class", "y axis");
+    var chartHeader_mlc = svg_mlc.append("g").attr("class", "chartHeader");
+
+    var chartStats_mlc = svg_mlc.append("g").attr("class", "chartStats");
+
+    createMultiLineChart(
+      property_mlc,
+      span_id_mlc,
+      location_x_mlc,
+      location_y_mlc,
+      svg_mlc,
+      width_mlc,
+      height_mlc,
+      margin_mlc,
+      xAxis_mlc,
+      yAxis_mlc,
+      chartHeader_mlc,
+      chartStats_mlc,
+      menu_span_id_mlc,
+      parseTime_mlc
+    );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// Lollipop LAYOUT LPL1////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // set the dimensions and margins of the graph
+    const margin_lpl1 = { top: 140, right: 30, bottom: 80, left: 100 },
+      width_lpl1 = 300 - margin_lpl1.left - margin_lpl1.right,
+      height_lpl1 = 800 - margin_lpl1.top - margin_lpl1.bottom;
+
+    year_lpl1 = "2013";
+    property_lpl1 = "fertility_rate";
+    location_x_lpl1 = "-510";
+    location_y_lpl1 = "-320";
+    data_order_lpl1 = "DESC";
+    span_id_lpl1 = "layout_s3";
+    // append the svg object to the body of the page
+    const svg_lpl1 = d3
+      .select("#" + span_id_lpl1)
+      .append("svg")
+      .attr("width", width_lpl1 + margin_lpl1.left + margin_lpl1.right)
+      .attr("height", height_lpl1 + margin_lpl1.top + margin_lpl1.bottom)
+      .style("position", "relative")
+      .style("top", location_y_lpl1)
+      .style("left", location_x_lpl1)
+      .append("g")
+      .attr("transform", `translate(${margin_lpl1.left}, ${margin_lpl1.top})`);
+
+    const Tooltip_lpl1 = d3.select("#" + span_id_lpl1).append("span");
+
+    const xAxis_lpl1 = svg_lpl1
+      .append("g")
+      .attr("transform", `translate(0, ${height_lpl1})`);
+
+    const yAxis_lpl1 = svg_lpl1.append("g");
+
+    var controlButtons_lpl1 = svg_lpl1
+      .append("g")
+      .attr("class", "controlButtons");
+    var chartHeader_lpl1 = svg_lpl1.append("g").attr("class", "chartHeader");
+
+    createLollipopChart_lpl1(
+      year_lpl1,
+      property_lpl1,
+      Tooltip_lpl1,
+      svg_lpl1,
+      margin_lpl1,
+      xAxis_lpl1,
+      yAxis_lpl1,
+      controlButtons_lpl1,
+      chartHeader_lpl1,
+      data_order_lpl1,
+      span_id_lpl1,
+      width_lpl1,
+      height_lpl1
+    );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// Lollipop LAYOUT LPL2////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // set the dimensions and margins of the graph
+    const margin_lpl2 = { top: 140, right: 30, bottom: 80, left: 100 },
+      width_lpl2 = 300 - margin_lpl2.left - margin_lpl2.right,
+      height_lpl2 = 800 - margin_lpl2.top - margin_lpl2.bottom;
+
+    year_lpl2 = "2013";
+    property_lpl2 = "life_expectancy";
+    location_x_lpl2 = "530";
+    location_y_lpl2 = "-1120";
+    data_order_lpl2 = "DESC";
+    span_id_lpl2 = "layout_s4";
+    // append the svg object to the body of the page
+    const svg_lpl2 = d3
+      .select("#" + span_id_lpl2)
+      .append("svg")
+      .attr("width", width_lpl2 + margin_lpl2.left + margin_lpl2.right)
+      .attr("height", height_lpl2 + margin_lpl2.top + margin_lpl2.bottom)
+      .style("position", "relative")
+      .style("top", location_y_lpl2)
+      .style("left", location_x_lpl2)
+      .append("g")
+      .attr("transform", `translate(${margin_lpl2.left}, ${margin_lpl2.top})`);
+
+    const Tooltip_lpl2 = d3.select("#" + span_id_lpl2).append("span");
+
+    const xAxis_lpl2 = svg_lpl2
+      .append("g")
+      .attr("transform", `translate(0, ${height_lpl2})`);
+
+    const yAxis_lpl2 = svg_lpl2.append("g");
+
+    var controlButtons_lpl2 = svg_lpl2
+      .append("g")
+      .attr("class", "controlButtons");
+    var chartHeader_lpl2 = svg_lpl2.append("g").attr("class", "chartHeader");
+
+    createLollipopChart_lpl2(
+      year_lpl2,
+      property_lpl2,
+      Tooltip_lpl2,
+      svg_lpl2,
+      margin_lpl2,
+      xAxis_lpl2,
+      yAxis_lpl2,
+      controlButtons_lpl2,
+      chartHeader_lpl2,
+      data_order_lpl2,
+      span_id_lpl2,
+      width_lpl2,
+      height_lpl2
+    );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// LineChart with BrushZoom //////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    span_id_lcb = "#layout_s5";
+    color_name_lcb = "lightblue";
+    location_x_lcb = "10";
+    location_y_lcb = "-1930";
+    const margin_lcb = { top: 30, right: 30, bottom: 70, left: 60 };
+    const width_lcb = 700 - margin_lcb.left - margin_lcb.right;
+    const height1_lcb = 250 - margin_lcb.top - margin_lcb.bottom;
+    const height2_lcb = 500 - margin_lcb.top - margin_lcb.bottom - 60;
+    var xaxis1_height_offset_lcb = 50;
+    var xaxis1_height_lcb = height1_lcb + xaxis1_height_offset_lcb;
+
+    property_type_lcb = "fertility_rate";
+    country_code_lcb = "IND";
+
+    // append the svg object to the body of the page
+    var svg_lcb = d3
+      .select(span_id_lcb)
+      .append("div")
+      .append("svg")
+      .attr("width", width_lcb + margin_lcb.left + margin_lcb.right)
+      .attr(
+        "height",
+        height2_lcb * 2 + margin_lcb.top * 2 + margin_lcb.bottom * 2
+      )
+      .style("position", "relative")
+      .style("top", location_y_lcb)
+      .style("left", location_x_lcb)
+      .append("g")
+      .append("g")
+      .attr(
+        "transform",
+        "translate(" + margin_lcb.left + "," + margin_lcb.top + ")"
+      );
+
+    var chartHeader_lcb = svg_lcb.append("g").attr("class", "chartHeader");
+
+    // X axis & Y axis
+    var x_axis_1_lcb = svg_lcb
+      .append("g")
+      .attr("transform", "translate(0," + +xaxis1_height_lcb + ")");
+    var y_axis_1_lcb = svg_lcb
+      .append("g")
+      .attr("class", "myYaxis")
+      .attr("transform", "translate(0," + +xaxis1_height_offset_lcb + ")");
+
+    var x_axis_2_lcb = svg_lcb
+      .append("g")
+      .attr("transform", "translate(0," + height2_lcb * 2 + ")");
+    var y_axis_2_lcb = svg_lcb
+      .append("g")
+      .attr("class", "myYaxis")
+      .attr("transform", "translate(0," + height2_lcb + ")");
+
+    // A function that create / update the plot for a given variable:
+    //function update(data, color_name) {
+
+    createLineChart(
+      svg_lcb,
+      property_type_lcb,
+      span_id_lcb,
+      color_name_lcb,
+      chartHeader_lcb,
+      country_code_lcb,
+      x_axis_1_lcb,
+      x_axis_2_lcb,
+      y_axis_1_lcb,
+      y_axis_2_lcb,
+      width_lcb,
+      height1_lcb,
+      height2_lcb,
+      xaxis1_height_offset_lcb
+    );
+
+    /////////////////  SECTION SVGs//////////////////////////////////////////
+    span_id_section_pop = "#svg_section_pop";
+    height_section_pop = 1170;
+    width_section_pop = 30;
+    location_y_section_pop = "-4002";
+    location_x_section_pop = "-695";
+
+    var svg_section_pop = d3
+      .select(span_id_section_pop)
+      .append("svg")
+      .attr("width", width_section_pop)
+      .attr("height", height_section_pop)
+      .style("background-color", "#2b544b")
+      .style("border", "solid")
+      .style("border-color", "transparent")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("position", "relative")
+      .style("", "relative")
+      .style("top", location_y_section_pop)
+      .style("left", location_x_section_pop);
+
+    svg_section_pop
+      .append("text")
+      .text("POPULATION STATS")
+      .attr("fill", "white")
+      .attr("text-anchor", "middle")
+      .attr(
+        "transform",
+        "translate(20," + (1 * height_section_pop) / 2 + ") rotate(-90)"
+      );
+
+    span_id_section_fe = "#svg_section_fe";
+    height_section_fe = 800;
+    width_section_fe = 30;
+    location_y_section_fe = "-3990";
+    location_x_section_fe = "-695";
+
+    var svg_section_fe = d3
+      .select(span_id_section_fe)
+      .append("svg")
+      .attr("width", width_section_fe)
+      .attr("height", height_section_fe)
+      .style("background-color", "#2b544b")
+      .style("border", "solid")
+      .style("border-color", "transparent")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("position", "relative")
+      .style("", "relative")
+      .style("top", location_y_section_fe)
+      .style("left", location_x_section_fe);
+
+    svg_section_fe
+      .append("text")
+      .text("FERTILITY AND LIFE EXPECTANCY STATS")
+      .attr("fill", "white")
+      .attr("text-anchor", "middle")
+      .attr(
+        "transform",
+        "translate(20," + (1 * height_section_fe) / 2 + ") rotate(-90)"
+      );
+
+    span_id_section_corr = "#svg_section_corr";
+    height_section_corr = 450;
+    width_section_corr = 30;
+    location_y_section_corr = "-4380";
+    location_x_section_corr = "-695";
+
+    var svg_section_corr = d3
+      .select(span_id_section_corr)
+      .append("svg")
+      .attr("width", width_section_corr)
+      .attr("height", height_section_corr)
+      .style("background-color", "#2b544b")
+      .style("border", "solid")
+      .style("border-color", "transparent")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("position", "relative")
+      .style("", "relative")
+      .style("top", location_y_section_corr)
+      .style("left", location_x_section_corr);
+
+    svg_section_corr
+      .append("text")
+      .text("FINDING CORRELATION")
+      .attr("fill", "white")
+      .attr("text-anchor", "middle")
+      .attr(
+        "transform",
+        "translate(20," + (1 * height_section_corr) / 2 + ") rotate(-90)"
+      );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// Grouped Scatter Plot //////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const margin_gsp = { top: 50, right: 250, bottom: 50, left: 80 },
+      width_gsp = 1350 - margin_gsp.left - margin_gsp.right,
+      height_gsp = 400 - margin_gsp.top - margin_gsp.bottom;
+
+    year_gsp = 2013;
+    span_id_gsp = "svg_section_s6";
+    location_x_gsp = 10;
+    location_y_gsp = -3950;
+
+    // append the svg object to the body of the page
+    const svg_gsp = d3
+      .select("#" + span_id_gsp)
+      .append("svg")
+      .attr("width", width_gsp + margin_gsp.left + margin_gsp.right)
+      .attr("height", height_gsp + margin_gsp.top + margin_gsp.bottom)
+      .style("position", "relative")
+      .style("top", location_y_gsp)
+      .style("left", location_x_gsp)
+      .append("g")
+      .attr("transform", `translate(${margin_gsp.left}, ${margin_gsp.top})`);
+
+    var xAxis_gsp = svg_gsp
+      .append("g")
+      .attr("transform", `translate(0, ${height_gsp})`);
+
+    var yAxis_gsp = svg_gsp.append("g");
+
+    const Tooltip_gsp = d3.select("#" + span_id_gsp).append("span");
+
+    var chartHeader_gsp = svg_gsp.append("g").attr("class", "chartHeader");
+
+    var chartLegend_gsp = svg_gsp.append("g").attr("class", "chartLegend");
+
+    createGroupedScatterPlot(
+      year_gsp,
+      svg_gsp,
+      margin_gsp,
+      width_gsp,
+      height_gsp,
+      xAxis_gsp,
+      yAxis_gsp,
+      Tooltip_gsp,
+      chartHeader_gsp,
+      chartLegend_gsp
+    );
+  </script>
+</html>
